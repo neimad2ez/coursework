@@ -53,35 +53,19 @@ public class EcsSim {
       if ((students - 10) > 0) {
         rep += s.instruct(10);
         students -= 10;
+        System.out.println(s.getStaffName() + " is teaching 10 students in his/her class.");
       } else if (students < 10) {
         rep += s.instruct(students);
+        System.out.println(s.getStaffName() + " is teaching " + students + " students in his/her class.");
+        students = 0;
       }
+    }
+    if(students > 0) {
+      uni.addReputation(-1*students);
+      System.out.println("Amount of uninstructed students: " + students);
+      System.out.println("Amount of reputation lost: " + -1*students);
     }
     return rep;
-  }
-
-  /**
-   * Adds 3 more people to staffMarket each year, randomised name between (letter) and (number) e.g B1, C1 or D3
-   */
-  public void addStaffMarket() {
-    for (int i = 0; i < 3; i++) {
-      for (Staff s: staffMarket) {
-        Random rnd = new Random();
-        String[] letters = {"A","B","C","D","E"};
-        String[] numbers = {"1","2","3","4","5"};
-        int randomLetter = rnd.nextInt(letters.length);
-        int randomNumber = rnd.nextInt(numbers.length);
-        String newStaff = letters[randomLetter] + numbers[randomNumber];
-        int low = 0;
-        int high = 100;
-        int result = rnd.nextInt(high-low) + low;
-        if(s.getStaffName() != newStaff) {
-          staffMarket.add(new Staff(newStaff, result));
-          System.out.println("New staff member " + newStaff + " has joined the Staff Market");
-          break;
-        }
-      }
-    }
   }
 
   /**
@@ -117,28 +101,13 @@ public class EcsSim {
   }
 
   /**
-   * hires staff according to how many students there are
-   * @param numOfStudents
-   * number of students
+   * hires staff checking if the hiring the staff, maintenance and salary may cause bankruptcy (totalCost)
    */
-  public void staffHire(int numOfStudents) {
-    if (numOfStudents > 0) {
-      if (uni.getNumOfStaff() == 0) {
-        uni.addStaff(staffMarket.get(0));
-        staffMarket.remove(0);
-        numOfStudents -= 10;
-      }
-      while (numOfStudents >= 10) {
-        uni.addStaff(staffMarket.get(0));
-        staffMarket.remove(0);
-        numOfStudents -= 10;
-      }
-      if(numOfStudents > 0 && numOfStudents < 10) {
-        uni.addStaff(staffMarket.get(0));
-        staffMarket.remove(0);
-      }
-    } else {
-      System.out.println("No students");
+  public void staffHire() {
+    double totalCost = uni.getTotalSalary() + uni.estate.getMaintenanceCost() + (staffMarket.get(0).getSkill() * 0.105);
+    if(uni.getBudget() >= totalCost) {
+      uni.addStaff(staffMarket.get(0));
+      staffMarket.remove(0);
     }
   }
 
@@ -148,99 +117,30 @@ public class EcsSim {
   public void randomiseUpgrade() {
     try {
       Random rnd = new Random();
-      int min = 0;
-      int max = 100;
-      int probability = rnd.nextInt(max-min) + min;
       int upgradeProbability = rnd.nextInt(3) + 1;
       if (upgradeProbability == 1) {
-        if (probability >= 0) {
-          if (!uni.checkMaxLevel(hallName)) {
-            uni.upgradeFacility(1, hallName);
-          } else if (!uni.checkMaxLevel(labName)) {
-            uni.upgradeFacility(1, labName);
-          } else if (!uni.checkMaxLevel(theatreName)) {
-            uni.upgradeFacility(1, theatreName);
-          }
-          if(probability >= 50) {
-            if (!uni.checkMaxLevel(labName)) {
-              uni.upgradeFacility(1, labName);
-            } else if (!uni.checkMaxLevel(theatreName)) {
-              uni.upgradeFacility(1, theatreName);
-            } else if (!uni.checkMaxLevel(hallName)) {
-              uni.upgradeFacility(1, hallName);
-            }
-            if (probability >= 80) {
-              if (!uni.checkMaxLevel(theatreName)) {
-                uni.upgradeFacility(1, theatreName);
-              } else if (!uni.checkMaxLevel(hallName)) {
-                uni.upgradeFacility(1, hallName);
-              } else if (!uni.checkMaxLevel(labName)) {
-                uni.upgradeFacility(1, labName);
-              }
-            }
-          }
-        } else {
-          System.out.println("No upgrades were made this year");
+        if (!uni.checkMaxLevel(hallName)) {
+          uni.upgradeFacility(1, hallName);
+        } else if (!uni.checkMaxLevel(labName)) {
+          uni.upgradeFacility(1, labName);
+        } else if (!uni.checkMaxLevel(theatreName)) {
+          uni.upgradeFacility(1, theatreName);
         }
       } else if (upgradeProbability == 2) {
-        if (probability >= 0) {
-          if (!uni.checkMaxLevel(labName)) {
-            uni.upgradeFacility(1, labName);
-          } else if (!uni.checkMaxLevel(theatreName)) {
-            uni.upgradeFacility(1, theatreName);
-          } else if (!uni.checkMaxLevel(hallName)) {
-            uni.upgradeFacility(1, hallName);
-          }
-          if(probability >= 50) {
-            if (!uni.checkMaxLevel(theatreName)) {
-              uni.upgradeFacility(1, theatreName);
-            } else if (!uni.checkMaxLevel(hallName)) {
-              uni.upgradeFacility(1, hallName);
-            } else if (!uni.checkMaxLevel(labName)) {
-              uni.upgradeFacility(1, labName);
-            }
-            if (probability >= 80) {
-              if (!uni.checkMaxLevel(hallName)) {
-                uni.upgradeFacility(1, hallName);
-              } else if (!uni.checkMaxLevel(labName)) {
-                uni.upgradeFacility(1, labName);
-              } else if (!uni.checkMaxLevel(theatreName)) {
-                uni.upgradeFacility(1, theatreName);
-              }
-            }
-          }
-        } else {
-          System.out.println("No upgrades were made this year");
+        if (!uni.checkMaxLevel(labName)) {
+          uni.upgradeFacility(1, labName);
+        } else if (!uni.checkMaxLevel(theatreName)) {
+          uni.upgradeFacility(1, theatreName);
+        } else if (!uni.checkMaxLevel(hallName)) {
+          uni.upgradeFacility(1, hallName);
         }
       } else if (upgradeProbability == 3) {
-        if (probability >= 0) {
-          if (!uni.checkMaxLevel(theatreName)) {
-            uni.upgradeFacility(1, theatreName);
-          } else if (!uni.checkMaxLevel(hallName)) {
-            uni.upgradeFacility(1, hallName);
-          } else if (!uni.checkMaxLevel(labName)) {
-            uni.upgradeFacility(1, labName);
-          }
-          if(probability >= 50) {
-            if (!uni.checkMaxLevel(hallName)) {
-              uni.upgradeFacility(1, hallName);
-            } else if (!uni.checkMaxLevel(labName)) {
-              uni.upgradeFacility(1, labName);
-            } else if (!uni.checkMaxLevel(theatreName)) {
-              uni.upgradeFacility(1, theatreName);
-            }
-            if (probability >= 80) {
-              if (!uni.checkMaxLevel(labName)) {
-                uni.upgradeFacility(1, labName);
-              } else if (!uni.checkMaxLevel(theatreName)) {
-                uni.upgradeFacility(1, theatreName);
-              } else if (!uni.checkMaxLevel(hallName)) {
-                uni.upgradeFacility(1, hallName);
-              }
-            }
-          }
-        } else {
-          System.out.println("No upgrades were made this year");
+        if (!uni.checkMaxLevel(theatreName)) {
+          uni.upgradeFacility(1, theatreName);
+        } else if (!uni.checkMaxLevel(hallName)) {
+          uni.upgradeFacility(1, hallName);
+        } else if (!uni.checkMaxLevel(labName)) {
+          uni.upgradeFacility(1, labName);
         }
       }
     } catch (Exception e) {
@@ -259,7 +159,11 @@ public class EcsSim {
     }
   }
 
-  public boolean checkMaxLevel() {
+  /**
+   * checks if all facilities are max level
+   * @return allMax - checks if all facilities are max level
+   */
+  public boolean checkBuildingsMaxLevel() {
     boolean allMax = false;
     int maxCount = 0;
     for(Facility f: uni.estate.getFacilities()) {
@@ -288,17 +192,19 @@ public class EcsSim {
   }
 
   /**
+   * simulates the University
    * @throws Exception
+   * throws exception if anything is wrong
    */
   public void simulate() throws Exception {
-    if (uni.getBudget() < 0) {
+    if (uni.getBudget() < 0) { // Checks if University has enough money to keep running for the year
       System.out.println("Not enough money, University shut down due to debt");
-      System.exit(0);
+      System.exit(0); // Exits program if no money available
     }
     System.out.println();
     System.out.println("Beginning of the year!");
     System.out.println();
-    if (uni.estate.getFacilities().length == 0) {
+    if (uni.estate.getFacilities().length == 0) { // If no facilities in the arrayList it will build new facilities
       System.out.println("New University, 3 buildings have been built!");
       hallName = "Hall " + year;
       uni.build("Hall", hallName);
@@ -308,7 +214,7 @@ public class EcsSim {
       uni.build("Theatre", theatreName);
       System.out.println();
     }
-    if (checkMaxLevel()) {
+    if (checkBuildingsMaxLevel()) { // If all buildings are max level it will create a new set of buildings
       System.out.println("All buildings are max level, 3 more new buildings have been built!");
       hallName = "Hall " + year;
       uni.build("Hall", hallName);
@@ -318,38 +224,35 @@ public class EcsSim {
       uni.build("Theatre", theatreName);
       System.out.println();
     }
-    randomiseUpgrade();
+    randomiseUpgrade(); //Randomises upgrade every year, chance that lab, hall, theatre are upgraded (only once)
     System.out.println();
-    int students = uni.estate.getNumberOfStudents();
-    int budgetIncrease = students * 10;
+    int students = uni.estate.getNumberOfStudents(); //Retrieves amount of students
+    int budgetIncrease = students * 10; //Budget increase is students * 10 - gain this amount of ECS coins
     System.out.println("As there are " + students + " students,");
     System.out.println("University budget has increased by: " + budgetIncrease);
-    uni.increaseBudget(budgetIncrease);
+    uni.increaseBudget(budgetIncrease); //Increases the budget by budgetIncrease
     System.out.println("University budget is now: " + uni.getBudget());
-    while (scanner.hasNextLine()) {
+    while (scanner.hasNextLine()) { //Checks the .txt file for adding staff to staffMarket
       String line = scanner.nextLine();
-      if (line.isEmpty()) {
+      if (line.isEmpty()) { //If .txt file has been run through and no more lines left it breaks
         break;
       }
-      String[] array = line.split("\\(");
-      int lastBracket = array[1].indexOf(")");
-      array[1] = array[1].substring(0, lastBracket);
-      staffMarket.add(new Staff(array[0], Integer.valueOf(array[1])));
+      String[] array = line.split("\\("); //Creates an array of name and skill level e.g [Name, 90)]
+      int lastBracket = array[1].indexOf(")"); //Retrieves position of where ")" first occurs
+      array[1] = array[1].substring(0, lastBracket); //Substrings array[1] from first character to lastBracket to remove the last bracket e.g [Name, 90]
+      staffMarket.add(new Staff(array[0], Integer.valueOf(array[1]))); //Adds this staff to the staffMarket
     }
-    addStaffMarket();
-//    for (Staff s: staffMarket) {
-//      System.out.println(s.getStaffName());
-//      System.out.println(s.getSkill());
-//    }
-    int numOfStudents = 23;
-    staffHire(numOfStudents);
+    int numOfStudents = students; //Initialises a temporary variable for amount of students
+    if (uni.arrayStaffSalary().size() < 4) { // 4 Staff maximum per year, if not, it will hire one more staff member
+      staffHire(); //Hires a new staff member
+    }
     System.out.println();
     System.out.println("During the year...");
     System.out.println();
-    int count = numOfStudents; //students
-    HashMap<Staff, Float> hash = uni.arrayStaffSalary();
-    int rep = instruct(hash, count);
-    uni.addReputation(rep);
+    int count = numOfStudents; //Another temporary variable for number of students
+    HashMap<Staff, Float> hash = uni.arrayStaffSalary(); //Initialises HashMap in EcsSim
+    int rep = instruct(hash, count); // method instruct returns amount of rep from instructing students
+    uni.addReputation(rep); // adds reputation gained from instructing students
     System.out.println("University reputation has increased by: " + rep);
     System.out.println("University reputation is now: " + uni.getReputation());
     System.out.println();
@@ -357,12 +260,12 @@ public class EcsSim {
     System.out.println();
     try {
       System.out.println("Estate maintenance cost: " + uni.estate.getMaintenanceCost());
-      uni.increaseBudget(-uni.estate.getMaintenanceCost());
+      uni.increaseBudget(-uni.estate.getMaintenanceCost()); //Decreases budget by cost of maintenace
       System.out.println("New budget: " + uni.getBudget());
       System.out.println();
-      float totalSalary = uni.getTotalSalary();
+      float totalSalary = uni.getTotalSalary(); // Retrieves total salary of staff members
       System.out.println("Total staff salary is: " + totalSalary);
-      uni.increaseBudget(-totalSalary);
+      uni.increaseBudget(-totalSalary); // Decreases budget by cost of staff salary.
       System.out.println("New budget is now: " + uni.getBudget());
       System.out.println();
     } catch (Exception e) {
@@ -377,6 +280,8 @@ public class EcsSim {
   }
 
   public void simulate(int years) throws Exception {
+    System.out.println(uni.getBudget());
+    System.out.println(years);
     for(int i = 1; i <= years; i++) {
       System.out.println("Year: " + i);
       year = i;

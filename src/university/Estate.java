@@ -101,29 +101,11 @@ public class Estate {
     int theatreCapacity = 0; //Initialise capacities
     for(Facility f: facilities) { //Loops through facilities ArrayList looping through each Facility in the ArrayList
       if(f instanceof Hall) { //If the Facility f is part of class Hall then run this line of code
-        if(hallCapacity == 0) { //Gets the capacity of Facility f
-          hallCapacity = ((Hall) f).getCapacity();
-        } else {
-          if(((Hall) f).getCapacity() < hallCapacity) {
-            hallCapacity = ((Hall) f).getCapacity();
-          }
-        }
+        hallCapacity += ((Hall) f).getCapacity();
       } else if(f instanceof Lab) { //If the Facility f is part of class Hall then run this line of code
-        if(labCapacity == 0) { //Gets the capacity of Facility f
-          labCapacity = ((Lab) f).getCapacity();
-        } else {
-          if(((Lab) f).getCapacity() < labCapacity) {
-            labCapacity = ((Lab) f).getCapacity();
-          }
-        }
+        labCapacity += ((Lab) f).getCapacity();
       } else if(f instanceof Theatre) { //If the Facility f is part of class Hall then run this line of code
-        if(theatreCapacity == 0) { //Gets the capacity of Facility f
-          theatreCapacity = ((Theatre) f).getCapacity();
-        } else {
-          if(((Theatre) f).getCapacity() < theatreCapacity) {
-            theatreCapacity = ((Theatre) f).getCapacity();
-          }
-        }
+        theatreCapacity += ((Theatre) f).getCapacity();
       }
     }
     int numOfStudents = Math.min(hallCapacity, Math.min(labCapacity, theatreCapacity)); //Minimal number

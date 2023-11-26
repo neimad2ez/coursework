@@ -66,6 +66,11 @@ public class University {
     reputation += rep;
   }
 
+  /**
+   * returns true or false depending if building is max level
+   * @param name
+   * @return boolean value true or false depending on if building is max level
+   */
   public Boolean checkMaxLevel(String name) {
     for (Facility f: estate.getFacilities()) {
       if (f.getName().equals(name)) {
@@ -93,6 +98,7 @@ public class University {
     for (int i = 0; i < num; i++) {
       for (Facility k : estate.getFacilities()) {
         if (k.getName().equals(name)) {
+          System.out.println("Upgrade cost is " + ((Building) k).getUpgradeCost());
           upgrade((Building) k);
           if (hasMoney ==1) {
             System.out.println(name + " has been upgraded to level " + ((Building) k).getLevel() + "!");
